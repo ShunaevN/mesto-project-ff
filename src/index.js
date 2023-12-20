@@ -25,3 +25,8 @@ initialCards.forEach(function (element){
     cardContainer.append(createCard(element.name, element.link, deleteCard));
 });
 
+const editButton = document.querySelector('.profile__edit-button');
+const editPopup = document.querySelector('.popup');
+editButton.addEventListener('click', function(){
+    editButton.setAttribute('display', 'block');
+});
