@@ -26,7 +26,23 @@ initialCards.forEach(function (element){
 });
 
 const editButton = document.querySelector('.profile__edit-button');
-const editPopup = document.querySelector('.popup');
-editButton.addEventListener('click', function(){
-    editButton.setAttribute('display', 'block');
-});
+const editPopup = document.querySelector('.popup_type_edit');
+
+
+
+function openPopup (evt) {
+  
+    editPopup.classList.add("popup_is-opened");
+}
+
+function closePopup (evt) {
+    if (evt.key === "Escape")   {
+        editPopup.classList.remove("popup_is-opened");
+    }
+    
+}
+
+
+editButton.addEventListener('click', openPopup);
+document.addEventListener('keydown', closePopup);
+

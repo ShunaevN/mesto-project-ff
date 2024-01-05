@@ -1,7 +1,7 @@
 {
   "name": "mesto-project-ff",
   "version": "1.0.0",
-  "description": "",
+  "description": "https://github.com/ShunaevN/mesto-project-ff.git",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
