@@ -45,4 +45,5 @@ function closePopup (evt) {
 
 editButton.addEventListener('click', openPopup);
 document.addEventListener('keydown', closePopup);
+document.addEventListener('click', closePopup);
 
