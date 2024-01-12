@@ -1,8 +1,16 @@
-import { imagePopup } from "..";
 import { openModal } from "./modal";
+import { cardContainer } from "..";
+
+const imagePopup = document.querySelector('.popup_type_image');
+const tagImageOfImagePopup = imagePopup.querySelector('.popup__image');
+const tagParagraphOfImagePopup = imagePopup.querySelector('.popup__caption');
+
+const newCardPopup = document.querySelector('.popup_type_new-card');
+const inputTypeCard = newCardPopup.querySelector('.popup__input_type_card-name');
+const inputTypeUrl = newCardPopup.querySelector('.popup__input_type_url');
 
 // Функция создания карточки. Принимает на вход название, ссылку, функцию удаления, лайка, зума.
-export function createCard(title, link, deleteFunction, likeFunction, zoomImageFunction) {
+export function createCard(card, deleteFunction, likeFunction, zoomImageFunction) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const deleteButton = cardElement.querySelector('.card__delete-button');
@@ -13,9 +21,9 @@ export function createCard(title, link, deleteFunction, likeFunction, zoomImageF
     likeButton.addEventListener('click', likeFunction);
     cardImage.addEventListener('click', zoomImageFunction);
 
-    cardElement.querySelector('.card__title').textContent = title;
-    cardElement.querySelector('.card__image').src = link;
-    cardElement.querySelector('.card__image').alt = title;
+    cardElement.querySelector('.card__title').textContent = card.name;
+    cardElement.querySelector('.card__image').src = card.link;
+    cardElement.querySelector('.card__image').alt = card.name;
 
     return cardElement;
   }
@@ -30,8 +38,6 @@ export function deleteCard(event) {
 // С помощью setAttribute устанавливаем необходимые значения атрибутов
 export function zoomCard(event) {
   openModal(imagePopup);
-  const tagImageOfImagePopup = imagePopup.querySelector('.popup__image');
-  const tagParagraphOfImagePopup = imagePopup.querySelector('.popup__caption');
   tagImageOfImagePopup.setAttribute("src", event.target.src)
   tagImageOfImagePopup.setAttribute("alt", `Фотография ${event.target.alt}`)
   tagParagraphOfImagePopup.textContent = event.target.alt;
@@ -40,13 +46,7 @@ export function zoomCard(event) {
 // Функция лайка карточки - передается как параметр в createCard.
 // Функционал реализован через добавдение/удаление соответсвующего класса
 export function likeCard(event) {
-  if (!event.target.classList.contains("card__like-button_is-active")) {
-    event.target.classList.add("card__like-button_is-active");
-  }
-  else {
-    event.target.classList.remove("card__like-button_is-active");
-  }
-  
+  event.target.classList.toggle("card__like-button_is-active"); 
 }
 
 // Функция отрисовки карточки. Цикл из прошлого проекта был вынесен в отдельную функцию, так
@@ -56,6 +56,17 @@ export function likeCard(event) {
 export function toShowCards(cardList, container) {
   container.innerHTML = "";
   cardList.forEach(function (element){
-    container.append(createCard(element.name, element.link, deleteCard, likeCard, zoomCard));
+    container.append(createCard(element, deleteCard, likeCard, zoomCard));
   });
+}
+
+
+export function toEditCardPopup(popup){
+  const key = inputTypeCard.value;
+  const value = inputTypeUrl.value;
+  const newCard = {
+    name: key,
+    link: value,
+  }
+  cardContainer.prepend(createCard(newCard, deleteCard, likeCard, zoomCard));
 }

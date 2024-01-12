@@ -1,17 +1,15 @@
 import '../pages/index.css';
 import {initialCards} from '../scripts/cards.js';
-import {toShowCards} from './components/card.js';
-import {openModal, closeModal, toEditProfilePopup, toEditCardPopup} from './components/modal.js';
+import {toShowCards, toEditCardPopup} from './components/card.js';
+import {openModal, closeModal, toEditProfilePopup, openPropfilePopup, profilePopup} from './components/modal.js';
+
 
 const content = document.querySelector('.content');
 export const cardContainer = content.querySelector('.places__list');
-const profilePopup = document.querySelector('.popup_type_edit');
 const newCardPopup = document.querySelector('.popup_type_new-card');
-export const imagePopup = document.querySelector('.popup_type_image');
 export const profileNameInput = document.querySelector('.profile__title');
 export const profileAboutInput = document.querySelector('.profile__description');
-
-const popupList = [profilePopup, newCardPopup, imagePopup];
+const popupList = Array.from(document.querySelectorAll('.popup'));
 
 // Вывести карточки на страницу
 
@@ -20,7 +18,9 @@ toShowCards(initialCards, cardContainer);
 // Через делегирование событий и условный оператор вызываем функцию openModal/closeModal, передавая попап
 document.addEventListener('click', function(evt){
     if (evt.target.classList.contains('profile__edit-button')){
-        openModal(profilePopup);
+        openPropfilePopup(profilePopup);
+        document.addEventListener('keydown', escapeIsClicked);
+
     }
     else if (evt.target.classList.contains('profile__add-button')){
         openModal(newCardPopup);
@@ -30,19 +30,23 @@ document.addEventListener('click', function(evt){
         // через родителя элемента, выбираем попап, на котором нажат крестик.
         const typeOfPopup = evt.target.parentElement.parentElement;  
         closeModal(typeOfPopup);
+        
     }
 
     else if (evt.target.classList.contains('popup')){
-        closeModal(evt.target);
+        closeModal(evt.target); 
     }
 })
 
 // Проходимся по массиву попапов и снимает с них класс
-document.addEventListener('keydown', function(evt) {
+
+
+function escapeIsClicked(evt) {
     if (evt.key === "Escape") {
-        popupList.forEach((element) => element.classList.remove("popup_is-opened"));
+        closeModal(profilePopup);
+        document.removeEventListener('keydown', escapeIsClicked);
     }
-})
+}
 
 // Нажимаем на кнопку и определяем какой попап является родителем у этой кнопки
 document.addEventListener('submit', function(evt) {
