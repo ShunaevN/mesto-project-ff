@@ -60,8 +60,12 @@ export function toShowCards(cardList, container) {
   });
 }
 
+// Функция добавления карточки. Принимает на вход попап с которого мы забираем название и ссылку. 
+// Функция будет экспортирована и использована в index.js
+// При добавлении карточки в объект, вызывается функция отрисовки карточек.
+// Параметры - массив карточек и DOM-элемент для вставки
 
-export function toEditCardPopup(popup){
+export function toEditCardPopup(){
   const key = inputTypeCard.value;
   const value = inputTypeUrl.value;
   const newCard = {
