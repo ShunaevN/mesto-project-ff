@@ -1,4 +1,4 @@
-import { profileNameInput, profileAboutInput} from '../index.js';
+import { toEditUsersProfile } from "./api";
 
 export const profilePopup = document.querySelector('.popup_type_edit');
 const inputName = profilePopup.querySelector('.popup__input_type_name');
@@ -18,9 +18,16 @@ function escapeButtonIsClicked(event){
     }
 }
 
+function setClearPopupInput(popup) {
+    const inputList = Array.from(popup.querySelectorAll('.popup__input'));
+    inputList.forEach(input =>  input.value = '');
+       
+}
+
 // Функция открытия модального окна. Принимает на вход попап, который необходимо открыть.
 // Реализация функции основана на добавлении/удалении соответствующего класса
 export function openModal(popup) {
+    setClearPopupInput(popup);
     popup.classList.add("popup_is-animated");
     setTimeout(function () {
         popup.classList.add("popup_is-opened");
@@ -35,8 +42,6 @@ export function openModal(popup) {
 }
 
 export function openPropfilePopup(popup) { 
-    inputName.value = profileNameInput.textContent;
-    inputDescription.value = profileAboutInput.textContent;
     openModal(popup);
     } 
 
@@ -53,9 +58,8 @@ export function closeModal(popup) {
 
 // Функция изменения значений имени и о себе. Принимает на вход поля, в котрые будем вставлять значения
 // и попап, с которого мы забираем эти значения. Функция будет экспортирована и использована в index.js
-export function toEditProfilePopup(name, about){
-    name.textContent = inputName.value;
-    about.textContent = inputDescription.value;
+export function toEditProfilePopup(){
+    toEditUsersProfile(inputName.value, inputDescription.value);
 }
 
 
