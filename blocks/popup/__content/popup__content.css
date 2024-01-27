@@ -9,6 +9,10 @@
   padding: 34px 36px;
 }
 
+.popup_profile_image__content {
+  min-height: 230px;
+}
+
 @media screen and (max-width: 568px) {
   .popup__content {
     width: 100%;

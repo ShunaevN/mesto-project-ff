@@ -72,3 +72,35 @@ export function deleteCardRequest(cardId) {
             authorization: config.headers.authorization},
     });
 }
+
+export function putLikeRequest(cardId) {
+    fetch(`${config.baseUrl}/cards/likes/${cardId}`, 
+    {
+        method: 'PUT',
+        headers: {
+            authorization: config.headers.authorization},
+    });
+}
+
+export function deleteLikeRequest(cardId) {
+    fetch(`${config.baseUrl}/cards/likes/${cardId}`, 
+    {
+        method: 'DELETE',
+        headers: {
+            authorization: config.headers.authorization},
+    });
+}
+
+export function changeAvatar(newAvatarUrl) {
+    fetch(`${config.baseUrl}/users/me/avatar`, 
+    {
+        method: 'PATCH',
+        headers: {
+                authorization: config.headers.authorization,
+                'Content-Type': config.headers["Content-Type"]
+                },
+        body: JSON.stringify({
+                avatar: newAvatarUrl
+            })
+    }); 
+}

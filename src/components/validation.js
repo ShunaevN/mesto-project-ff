@@ -30,7 +30,6 @@ const showInputError = (objectConfig, formElement, inputElement, errorMessage) =
     }
   };
 
-
   const hasInvalidInput = (inputList) => {
     
     return inputList.some((inputElement) => {

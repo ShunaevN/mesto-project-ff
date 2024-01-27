@@ -67,6 +67,7 @@
       </form>
     </div>
   </div>
+
   <div class="popup popup_type_new-card">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
@@ -98,6 +99,31 @@
       </form>
     </div>
   </div>
+
+
+  <div class="popup popup_type_profile_image">
+    <div class="popup__content popup_profile_image__content">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="edit-profile_image" novalidate>
+        <input 
+        type="url" 
+        name="link" 
+        id="url-input" 
+        class="popup__input popup__input_type_url" 
+        placeholder="Ссылка на аватар" 
+        required
+        >
+        <span class="popup__input-error url-input-error"></span>
+        <button type="submit" class="button popup__button">Сохранить</button>
+      </form>
+    </div>
+  </div>
+
+
+
+
+
   <div class="popup popup_type_image">
     <div class="popup__content popup__content_content_image">
       <button type="button" class="popup__close"></button>

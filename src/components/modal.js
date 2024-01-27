@@ -1,4 +1,4 @@
-import { toEditUsersProfile } from "./api";
+import { toEditUsersProfile, changeAvatar } from "./api";
 
 export const profilePopup = document.querySelector('.popup_type_edit');
 const inputName = profilePopup.querySelector('.popup__input_type_name');
@@ -62,7 +62,9 @@ export function toEditProfilePopup(){
     toEditUsersProfile(inputName.value, inputDescription.value);
 }
 
-
+export function toEditProfileImagePopup(url){
+    changeAvatar(url);
+}
 
 
 

@@ -1,6 +1,6 @@
 import '../pages/index.css';
 import {toShowCards, toEditCardPopup} from './components/card.js';
-import {openModal, closeModal, toEditProfilePopup, openPropfilePopup, profilePopup} from './components/modal.js';
+import {openModal, closeModal, toEditProfilePopup, openPropfilePopup, profilePopup, toEditProfileImagePopup} from './components/modal.js';
 import { enableValidation } from './components/validation.js';
 import { getUserInfo, getCardsInfo} from './components/api.js';
 
@@ -14,11 +14,14 @@ export const initialCards = [];
 const content = document.querySelector('.content');
 export const cardContainer = content.querySelector('.places__list');
 const newCardPopup = document.querySelector('.popup_type_new-card');
+const editImageProfile = document.querySelector('.popup_type_profile_image');
 export const profileNameInput = document.querySelector('.profile__title');
 export const profileAboutInput = document.querySelector('.profile__description');
 export const profileImage = document.querySelector('.profile__image');
 const editButtonProfile = document.querySelector('.profile__edit-button');
 const addCardButton = document.querySelector('.profile__add-button');
+const urlEditImageProfile = editImageProfile.querySelector('.popup__input_type_url');
+
 
 
 userInfo
@@ -35,7 +38,6 @@ userInfo
 
 Promise.all([userInfo, cardsInfo])
 .then((data) =>{
-    console.log(data[1]);
     data[1].forEach(element => {  // index 1 is index of card's object 
     initialCards.push(element);
     });
@@ -48,7 +50,7 @@ Promise.all([userInfo, cardsInfo])
 
 editButtonProfile.addEventListener('click', () => {openPropfilePopup(profilePopup);});
 addCardButton.addEventListener('click', () => {openModal(newCardPopup);});
-
+profileImage.addEventListener('click', () => {openModal(editImageProfile);});
 
 // Нажимаем на кнопку и определяем какой попап является родителем у этой кнопки
 profilePopup.addEventListener('submit', function(evt) {
@@ -62,6 +64,14 @@ newCardPopup.addEventListener('submit', function(evt) {
     toEditCardPopup();
     closeModal(newCardPopup);
 });
+
+console.log(profileImage);
+
+editImageProfile.addEventListener('submit', function(evt) {
+    evt.preventDefault();
+    toEditProfileImagePopup(urlEditImageProfile.value);
+    closeModal(editImageProfile);
+})
 
 enableValidation({
     formSelector: '.popup__form',
