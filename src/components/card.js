@@ -1,5 +1,7 @@
 import { openModal } from "./modal";
-import { addNewCard, deleteCardRequest, putLikeRequest, deleteLikeRequest, getCardsInfo } from "./api";
+import { addNewCard, deleteCardRequest, putLikeRequest, deleteLikeRequest} from "./api";
+import { userData } from "..";
+import { cardContainer, initialCards } from "..";
 
 const imagePopup = document.querySelector('.popup_type_image');
 const tagImageOfImagePopup = imagePopup.querySelector('.popup__image');
@@ -9,9 +11,8 @@ const newCardPopup = document.querySelector('.popup_type_new-card');
 const inputTypeCard = newCardPopup.querySelector('.popup__input_type_card-name');
 const inputTypeUrl = newCardPopup.querySelector('.popup__input_type_url');
 
-function updateLikes(element, updateCard) {
-  element.querySelector('.card__likes').textContent = updateCard.likes.length;
-}
+
+
 
 // Функция создания карточки. Принимает на вход название, ссылку, функцию удаления, лайка, зума.
 export function createCard(card, deleteFunction, likeFunction, zoomImageFunction, userData) {
@@ -44,13 +45,21 @@ export function createCard(card, deleteFunction, likeFunction, zoomImageFunction
         likeButton.classList.add('card__like-button_is-active');
       }
     }
-    updateLikes(cardElement, card);
+    
+    cardElement.querySelector('.card__likes').textContent = card.likes.length;
     return cardElement;
   }
 
 // Функция удаления карточки - передается как параметр в createCard
 export function deleteCard(id) {
-    deleteCardRequest(id);
+    deleteCardRequest(id)
+    .then(() => {
+       initialCards.shift()
+       toShowCards(initialCards, cardContainer, userData);  
+   })
+   .catch((err) => {
+    console.log(err); // выводим ошибку в консоль
+  });
 }
 
 // Функция зума карточки - передается как параметр в createCard.
@@ -68,13 +77,15 @@ export function zoomCard(event) {
 export function likeCard(event, card) {
   event.target.classList.toggle("card__like-button_is-active");
   if (event.target.classList.contains("card__like-button_is-active")){
-    putLikeRequest(card._id)
-    
+    putLikeRequest(card._id).then((count) => {
+      event.target.parentElement.querySelector('.card__likes').textContent = count.likes.length;
+    });
   }
   else {
-    deleteLikeRequest(card._id);
+    deleteLikeRequest(card._id).then((count) => {
+      event.target.parentElement.querySelector('.card__likes').textContent = count.likes.length;
+    });
   }
-
 }
 
 // Функция отрисовки карточки. Цикл из прошлого проекта был вынесен в отдельную функцию, так
@@ -94,5 +105,10 @@ export function toShowCards(cardList, container, usersData) {
 // Параметры - массив карточек и DOM-элемент для вставки
 
 export function toEditCardPopup(){
-  addNewCard(inputTypeCard.value, inputTypeUrl.value);
+  addNewCard(inputTypeCard.value, inputTypeUrl.value)
+  .then((card) => {
+     initialCards.unshift(card);
+     toShowCards(initialCards, cardContainer, userData);  
+  });
+  
 }

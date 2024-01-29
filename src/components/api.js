@@ -35,7 +35,7 @@ export function getCardsInfo() {
 }
 
 export function toEditUsersProfile(userName, userAbout){
-    fetch(`${config.baseUrl}/users/me`, 
+    return fetch(`${config.baseUrl}/users/me`, 
     {
         method: 'PATCH',
         headers: {
@@ -46,11 +46,18 @@ export function toEditUsersProfile(userName, userAbout){
                 name: userName,
                 about: userAbout
             })
-    }); 
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json();
+            
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
 }
 
 export function addNewCard(cardName, cardLink){
-    fetch(`${config.baseUrl}/cards`, 
+    return fetch(`${config.baseUrl}/cards`, 
     {
         method: 'POST',
         headers: {
@@ -61,34 +68,63 @@ export function addNewCard(cardName, cardLink){
                 name: cardName,
                 link: cardLink
             })
-    }); 
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json();
+            
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    
 }
 
 export function deleteCardRequest(cardId) {
-    fetch(`${config.baseUrl}/cards/${cardId}`, 
+    return fetch(`${config.baseUrl}/cards/${cardId}`, 
     {
         method: 'DELETE',
         headers: {
             authorization: config.headers.authorization},
-    });
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json();
+            
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
 }
 
 export function putLikeRequest(cardId) {
-    fetch(`${config.baseUrl}/cards/likes/${cardId}`, 
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, 
     {
         method: 'PUT',
         headers: {
             authorization: config.headers.authorization},
-    });
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json()
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    
 }
 
 export function deleteLikeRequest(cardId) {
-    fetch(`${config.baseUrl}/cards/likes/${cardId}`, 
+  
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, 
     {
         method: 'DELETE',
         headers: {
             authorization: config.headers.authorization},
-    });
+    })
+    .then(res => {
+        if (res.ok) {
+            return res.json()
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
 }
 
 export function changeAvatar(newAvatarUrl) {

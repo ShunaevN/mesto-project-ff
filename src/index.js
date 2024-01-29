@@ -21,7 +21,7 @@ export const profileImage = document.querySelector('.profile__image');
 const editButtonProfile = document.querySelector('.profile__edit-button');
 const addCardButton = document.querySelector('.profile__add-button');
 const urlEditImageProfile = editImageProfile.querySelector('.popup__input_type_url');
-
+export let userData;
 
 
 userInfo
@@ -29,6 +29,7 @@ userInfo
     profileNameInput.textContent = data.name;
     profileAboutInput.textContent = data.about;
     profileImage.style.backgroundImage = `url(${data.avatar})`;
+    userData = data;
 })
 .catch((err) => {
     console.log(err); // выводим ошибку в консоль
@@ -38,7 +39,7 @@ userInfo
 
 Promise.all([userInfo, cardsInfo])
 .then((data) =>{
-    data[1].forEach(element => {  // index 1 is index of card's object 
+    data[1].forEach(element => {  // index 1 is index of card's object
     initialCards.push(element);
     });
     toShowCards(initialCards, cardContainer, data[0]);
@@ -65,7 +66,6 @@ newCardPopup.addEventListener('submit', function(evt) {
     closeModal(newCardPopup);
 });
 
-console.log(profileImage);
 
 editImageProfile.addEventListener('submit', function(evt) {
     evt.preventDefault();

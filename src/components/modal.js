@@ -1,4 +1,5 @@
 import { toEditUsersProfile, changeAvatar } from "./api";
+import { profileNameInput, profileAboutInput } from "..";
 
 export const profilePopup = document.querySelector('.popup_type_edit');
 const inputName = profilePopup.querySelector('.popup__input_type_name');
@@ -59,7 +60,11 @@ export function closeModal(popup) {
 // Функция изменения значений имени и о себе. Принимает на вход поля, в котрые будем вставлять значения
 // и попап, с которого мы забираем эти значения. Функция будет экспортирована и использована в index.js
 export function toEditProfilePopup(){
-    toEditUsersProfile(inputName.value, inputDescription.value);
+    toEditUsersProfile(inputName.value, inputDescription.value)
+    .then((user) => {
+        profileAboutInput.textContent = user.about;
+        profileNameInput.textContent = user.name;
+    })
 }
 
 export function toEditProfileImagePopup(url){
