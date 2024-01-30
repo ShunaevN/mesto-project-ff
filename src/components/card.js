@@ -18,7 +18,7 @@ export const approveDeleteImage = document.querySelector('.popup_type_approve_de
 
 // Функция создания карточки. Принимает на вход название, ссылку, функцию удаления, лайка, зума.
 export function createCard(card, deleteFunction, favoriteFunction, likeFunction, zoomImageFunction, userData) {
-  if (!localStorage.getItem(card._id)){
+  if (localStorage.getItem(card._id) !== 'block'){
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const deleteButton = cardElement.querySelector('.card__delete-button');
@@ -34,12 +34,15 @@ export function createCard(card, deleteFunction, favoriteFunction, likeFunction,
     likeButton.addEventListener('click', (event) => {likeFunction(event, card);});
     cardImage.addEventListener('click', zoomImageFunction);
 
-    favoriteButton.addEventListener('click', favoriteFunction);
+    favoriteButton.addEventListener('click', (evt) =>{
+      favoriteFunction(evt, card._id);
+    
+    }
+      );
     
     blockButton.addEventListener('click', (evt) => {
       localStorage.setItem(card._id, 'block');
       evt.target.parentElement.remove();
-      console.log(localStorage);
     });
 
     cardElement.querySelector('.card__title').textContent = card.name;
@@ -60,6 +63,11 @@ export function createCard(card, deleteFunction, favoriteFunction, likeFunction,
         likeButton.classList.add('card__like-button_is-active');
       }
     }
+
+      if (localStorage[card._id] === "favorite") {
+        favoriteButton.classList.add("card__favorite-button_is-active");
+      }
+  
     
     cardElement.querySelector('.card__likes').textContent = card.likes.length;
 
@@ -116,7 +124,11 @@ export function likeCard(event, card) {
 export function toShowCards(cardList, container, usersData) {
   container.innerHTML = "";
   cardList.forEach(function (element){
-    container.append(createCard(element, deleteCard, setFavorite, likeCard, zoomCard, usersData));
+    const card = createCard(element, deleteCard, setFavorite, likeCard, zoomCard, usersData);
+    if (card){
+      container.append(card);
+    }
+    
   });
 }
 
@@ -142,7 +154,14 @@ export function toEditCardPopup(){
 
 // ----------------------
 
-function setFavorite(event) {
+function setFavorite(event, id) {
   event.target.classList.toggle("card__favorite-button_is-active");
+  if (event.target.classList.contains("card__favorite-button_is-active")){
+    localStorage.setItem(id, 'favorite');
+  }
+  else {
+    localStorage.removeItem(id);
+  }
+  console.log(localStorage);
 }
 
