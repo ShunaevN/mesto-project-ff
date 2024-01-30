@@ -48,6 +48,7 @@ export function createCard(card, deleteFunction, favoriteFunction, likeFunction,
     cardElement.querySelector('.card__title').textContent = card.name;
     cardElement.querySelector('.card__image').src = card.link;
     cardElement.querySelector('.card__image').alt = card.name;
+    cardElement.querySelector('.card__author').textContent = `Автор: ${card.owner.name}`;
     
     // Проверка на принадлежность автора карточке
     if (userData._id !== card.owner._id) {
