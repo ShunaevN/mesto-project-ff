@@ -3,6 +3,7 @@ import { userData } from "..";
 import { cardContainer, initialCards, renderLoading } from "..";
 import { addNewCard, deleteCardRequest, putLikeRequest, deleteLikeRequest} from "./api";
 
+
 const imagePopup = document.querySelector('.popup_type_image');
 const tagImageOfImagePopup = imagePopup.querySelector('.popup__image');
 const tagParagraphOfImagePopup = imagePopup.querySelector('.popup__caption');
@@ -17,6 +18,7 @@ export const approveDeleteImage = document.querySelector('.popup_type_approve_de
 
 // Функция создания карточки. Принимает на вход название, ссылку, функцию удаления, лайка, зума.
 export function createCard(card, deleteFunction, favoriteFunction, likeFunction, zoomImageFunction, userData) {
+  if (!localStorage.getItem(card._id)){
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const deleteButton = cardElement.querySelector('.card__delete-button');
@@ -31,7 +33,14 @@ export function createCard(card, deleteFunction, favoriteFunction, likeFunction,
     });
     likeButton.addEventListener('click', (event) => {likeFunction(event, card);});
     cardImage.addEventListener('click', zoomImageFunction);
+
     favoriteButton.addEventListener('click', favoriteFunction);
+    
+    blockButton.addEventListener('click', (evt) => {
+      localStorage.setItem(card._id, 'block');
+      evt.target.parentElement.remove();
+      console.log(localStorage);
+    });
 
     cardElement.querySelector('.card__title').textContent = card.name;
     cardElement.querySelector('.card__image').src = card.link;
@@ -39,12 +48,10 @@ export function createCard(card, deleteFunction, favoriteFunction, likeFunction,
     
     // Проверка на принадлежность автора карточке
     if (userData._id !== card.owner._id) {
-      deleteButton.style.background = "none";
-      deleteButton.disabled = true;
+      deleteButton.remove();
     }
     else {
-      blockButton.style.background = "none";
-      blockButton.disabled = true;
+      blockButton.remove();
     }
 
     // Проверка на нахождение пользователя в списке пользователей карточки, которые поставили лайк
@@ -57,6 +64,7 @@ export function createCard(card, deleteFunction, favoriteFunction, likeFunction,
     cardElement.querySelector('.card__likes').textContent = card.likes.length;
 
     return cardElement;
+  }
   }
 
 // Функция удаления карточки - передается как параметр в createCard
@@ -137,3 +145,4 @@ export function toEditCardPopup(){
 function setFavorite(event) {
   event.target.classList.toggle("card__favorite-button_is-active");
 }
+
