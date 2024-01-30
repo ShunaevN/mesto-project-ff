@@ -1,0 +1,9 @@
+.popup__author {
+  font-size: 12px;
+  line-height: 15px;
+  color: #fff;
+  position: absolute;
+  right: 15px;
+  top: calc(100% + 10px);
+  margin: 0;
+}

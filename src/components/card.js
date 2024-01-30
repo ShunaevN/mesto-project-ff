@@ -7,6 +7,7 @@ import { addNewCard, deleteCardRequest, putLikeRequest, deleteLikeRequest} from 
 const imagePopup = document.querySelector('.popup_type_image');
 const tagImageOfImagePopup = imagePopup.querySelector('.popup__image');
 const tagParagraphOfImagePopup = imagePopup.querySelector('.popup__caption');
+const tagAuthorOfImagePopup = imagePopup.querySelector('.popup__author');
 
 const newCardPopup = document.querySelector('.popup_type_new-card');
 const inputTypeCard = newCardPopup.querySelector('.popup__input_type_card-name');
@@ -96,6 +97,8 @@ export function zoomCard(event) {
   tagImageOfImagePopup.setAttribute("src", event.target.src)
   tagImageOfImagePopup.setAttribute("alt", `Фотография ${event.target.alt}`)
   tagParagraphOfImagePopup.textContent = event.target.alt;
+  tagAuthorOfImagePopup.textContent = event.target.parentElement.querySelector('.card__author').textContent;
+
 }
 
 // Функция лайка карточки - передается как параметр в createCard.
