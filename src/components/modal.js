@@ -1,9 +1,14 @@
 import { toEditUsersProfile, changeAvatar } from "./api";
-import { profileNameInput, profileAboutInput } from "..";
+import { profileNameInput, profileAboutInput, profileImage, renderLoading} from "..";
 
 export const profilePopup = document.querySelector('.popup_type_edit');
+const profilePopupButtonRenderIsLoading = profilePopup.querySelector('.button');
 const inputName = profilePopup.querySelector('.popup__input_type_name');
 const inputDescription = profilePopup.querySelector('.popup__input_type_description');
+
+const newImageProfilePopup = document.querySelector('.popup_type_profile_image');
+const editImageProfileForm = newImageProfilePopup.querySelector('.popup__form');
+const newProfileImagePopupButtonRenderIsLoading = editImageProfileForm.querySelector('.button');
 
 function closeButtonIsClicked(event){
     const targetClassList = event.target.classList; // запишем в переменную класс элемента, на котором произошло событие
@@ -65,10 +70,20 @@ export function toEditProfilePopup(){
         profileAboutInput.textContent = user.about;
         profileNameInput.textContent = user.name;
     })
+    .finally(() => {
+        renderLoading(profilePopupButtonRenderIsLoading, false);
+    })
+    
 }
 
 export function toEditProfileImagePopup(url){
-    changeAvatar(url);
+    changeAvatar(url)
+    .then((user)=> {
+        profileImage.style.backgroundImage = `url(${user.avatar})`;
+    })
+    .finally(() => {
+        renderLoading(newProfileImagePopupButtonRenderIsLoading, false);
+    })
 }
 
 

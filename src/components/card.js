@@ -1,7 +1,7 @@
 import { openModal } from "./modal";
-import { addNewCard, deleteCardRequest, putLikeRequest, deleteLikeRequest} from "./api";
 import { userData } from "..";
-import { cardContainer, initialCards } from "..";
+import { cardContainer, initialCards, renderLoading } from "..";
+import { addNewCard, deleteCardRequest, putLikeRequest, deleteLikeRequest} from "./api";
 
 const imagePopup = document.querySelector('.popup_type_image');
 const tagImageOfImagePopup = imagePopup.querySelector('.popup__image');
@@ -10,9 +10,7 @@ const tagParagraphOfImagePopup = imagePopup.querySelector('.popup__caption');
 const newCardPopup = document.querySelector('.popup_type_new-card');
 const inputTypeCard = newCardPopup.querySelector('.popup__input_type_card-name');
 const inputTypeUrl = newCardPopup.querySelector('.popup__input_type_url');
-
-
-
+const newImagePopupButtonRenderIsLoading = newCardPopup.querySelector('.button');
 
 // Функция создания карточки. Принимает на вход название, ссылку, функцию удаления, лайка, зума.
 export function createCard(card, deleteFunction, likeFunction, zoomImageFunction, userData) {
@@ -22,9 +20,7 @@ export function createCard(card, deleteFunction, likeFunction, zoomImageFunction
     const likeButton = cardElement.querySelector('.card__like-button');
     const cardImage = cardElement.querySelector('.card__image');
 
-    deleteButton.addEventListener('click', function(){
-      deleteFunction(card._id);
-    });
+    deleteButton.addEventListener('click', function(){deleteFunction(card._id);});
     likeButton.addEventListener('click', (event) => {likeFunction(event, card);});
     cardImage.addEventListener('click', zoomImageFunction);
 
@@ -32,13 +28,12 @@ export function createCard(card, deleteFunction, likeFunction, zoomImageFunction
     cardElement.querySelector('.card__image').src = card.link;
     cardElement.querySelector('.card__image').alt = card.name;
     
-
     // Проверка на принадлежность автора карточке
     if (userData._id !== card.owner._id) {
       deleteButton.style.background = "none";
       deleteButton.disabled = true;
     }
-    
+
     // Проверка на нахождение пользователя в списке пользователей карточки, которые поставили лайк
     for (let i = 0; i < card.likes.length; i++){
       if (userData._id === card.likes[i]._id) {
@@ -47,6 +42,7 @@ export function createCard(card, deleteFunction, likeFunction, zoomImageFunction
     }
     
     cardElement.querySelector('.card__likes').textContent = card.likes.length;
+
     return cardElement;
   }
 
@@ -58,7 +54,7 @@ export function deleteCard(id) {
        toShowCards(initialCards, cardContainer, userData);  
    })
    .catch((err) => {
-    console.log(err); // выводим ошибку в консоль
+       console.log(err); // выводим ошибку в консоль
   });
 }
 
@@ -76,16 +72,20 @@ export function zoomCard(event) {
 // Функционал реализован через добавдение/удаление соответсвующего класса
 export function likeCard(event, card) {
   event.target.classList.toggle("card__like-button_is-active");
-  if (event.target.classList.contains("card__like-button_is-active")){
-    putLikeRequest(card._id).then((count) => {
-      event.target.parentElement.querySelector('.card__likes').textContent = count.likes.length;
-    });
-  }
-  else {
-    deleteLikeRequest(card._id).then((count) => {
-      event.target.parentElement.querySelector('.card__likes').textContent = count.likes.length;
-    });
-  }
+  if (event.target.classList.contains("card__like-button_is-active"))
+    {
+      putLikeRequest(card._id).then((count) => 
+        {
+          event.target.parentElement.querySelector('.card__likes').textContent = count.likes.length;
+        });
+    }
+  else 
+    {
+      deleteLikeRequest(card._id).then((count) => 
+        {
+          event.target.parentElement.querySelector('.card__likes').textContent = count.likes.length;
+        });
+    }
 }
 
 // Функция отрисовки карточки. Цикл из прошлого проекта был вынесен в отдельную функцию, так
@@ -107,8 +107,10 @@ export function toShowCards(cardList, container, usersData) {
 export function toEditCardPopup(){
   addNewCard(inputTypeCard.value, inputTypeUrl.value)
   .then((card) => {
-     initialCards.unshift(card);
-     toShowCards(initialCards, cardContainer, userData);  
-  });
-  
+      initialCards.unshift(card);
+      toShowCards(initialCards, cardContainer, userData);  
+  })
+  .finally(() => {
+      renderLoading(newImagePopupButtonRenderIsLoading, false);
+  })
 }
