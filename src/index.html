@@ -67,7 +67,6 @@
       </form>
     </div>
   </div>
-
   <div class="popup popup_type_new-card">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
@@ -99,8 +98,6 @@
       </form>
     </div>
   </div>
-
-
   <div class="popup popup_type_profile_image">
     <div class="popup__content popup_profile_image__content">
       <button type="button" class="popup__close"></button>
@@ -119,11 +116,15 @@
       </form>
     </div>
   </div>
-
-
-
-
-
+  <div class="popup popup_type_approve_delete">
+    <div class="popup__content popup_type_approve_delete__content">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Вы уверены?</h3>
+      <form class="popup__form" name="edit-profile_image" novalidate>
+        <button type="submit" class="button popup__button">Да</button>
+      </form>
+    </div>
+  </div>
   <div class="popup popup_type_image">
     <div class="popup__content popup__content_content_image">
       <button type="button" class="popup__close"></button>
@@ -132,12 +133,12 @@
     </div>
   </div>
 </div>
-
-
 <template id="card-template">
   <li class="places__item card">
     <img class="card__image" src="" alt="" />
     <button type="button" class="card__delete-button"></button>
+    <button type="button" class="card__block-button"></button>
+    <button type="button" class="card__favorite-button"></button>
     <div class="card__description">
       <h2 class="card__title">
       </h2>

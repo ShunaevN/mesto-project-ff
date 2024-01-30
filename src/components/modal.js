@@ -41,10 +41,6 @@ export function openModal(popup) {
 
     popup.addEventListener('mouseup', closeButtonIsClicked);
     document.addEventListener('keydown', escapeButtonIsClicked);
-
-    // Если переданный попап - редактирование профиля - то забираем поля имени и о себе и вставляем в попап.
-    // Глобальные поля имени и о себе были импортированы выше
-
 }
 
 export function openPropfilePopup(popup) { 
@@ -70,6 +66,9 @@ export function toEditProfilePopup(){
         profileAboutInput.textContent = user.about;
         profileNameInput.textContent = user.name;
     })
+    .catch((err) => {
+        console.log(err); 
+      })
     .finally(() => {
         renderLoading(profilePopupButtonRenderIsLoading, false);
     })
@@ -81,6 +80,9 @@ export function toEditProfileImagePopup(url){
     .then((user)=> {
         profileImage.style.backgroundImage = `url(${user.avatar})`;
     })
+    .catch((err) => {
+        console.log(err); 
+      })
     .finally(() => {
         renderLoading(newProfileImagePopupButtonRenderIsLoading, false);
     })

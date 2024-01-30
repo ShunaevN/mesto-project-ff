@@ -18,14 +18,16 @@ const showInputError = (objectConfig, formElement, inputElement, errorMessage) =
         // встроенный метод setCustomValidity принимает на вход строку
         // и заменяет ею стандартное сообщение об ошибке
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-    } else {
+    } 
+    else {
         // если передать пустую строку, то будут доступны
         // стандартные браузерные сообщения
         inputElement.setCustomValidity("");
      }
     if (!inputElement.validity.valid) {
       showInputError(objectConfig, formElement, inputElement, inputElement.validationMessage);
-    } else {
+    } 
+    else {
       hideInputError(objectConfig, formElement, inputElement);
     }
   };
@@ -34,7 +36,7 @@ const showInputError = (objectConfig, formElement, inputElement, errorMessage) =
     
     return inputList.some((inputElement) => {
       return !inputElement.validity.valid;
-    })
+    });
   }
 
   const toggleButtonState = (objectConfig, inputList, buttonElement) => {

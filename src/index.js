@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import {toShowCards, toEditCardPopup} from './components/card.js';
+import {toShowCards, toEditCardPopup, approveDeleteImage, transferDeletedCardId, deleteCard} from './components/card.js';
 import { enableValidation } from './components/validation.js';
 import { getUserInfo, getCardsInfo} from './components/api.js';
 import {openModal, closeModal, toEditProfilePopup, openPropfilePopup, profilePopup, toEditProfileImagePopup} from './components/modal.js';
@@ -49,7 +49,7 @@ userInfo
         userData = data;
     })
     .catch((err) => {
-        console.log(err); // выводим ошибку в консоль
+        console.log(err);
     });
 
 
@@ -63,7 +63,7 @@ Promise.all([userInfo, cardsInfo])
             toShowCards(initialCards, cardContainer, data[0]);
     })
     .catch((err) => {
-             console.log(err); // выводим ошибку в консоль
+             console.log(err); 
     });
 
 
@@ -92,6 +92,12 @@ editImageProfile.addEventListener('submit', function(evt) {
     renderLoading(evt.target.querySelector('.button'), true)
     toEditProfileImagePopup(urlEditImageProfile.value);
     closeModal(editImageProfile);
+})
+
+approveDeleteImage.addEventListener('submit', function(evt) {
+    evt.preventDefault();
+    deleteCard(transferDeletedCardId);
+    closeModal(approveDeleteImage);
 })
 
 enableValidation(globalConfigSelectors);

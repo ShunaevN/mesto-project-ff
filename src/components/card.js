@@ -12,17 +12,26 @@ const inputTypeCard = newCardPopup.querySelector('.popup__input_type_card-name')
 const inputTypeUrl = newCardPopup.querySelector('.popup__input_type_url');
 const newImagePopupButtonRenderIsLoading = newCardPopup.querySelector('.button');
 
+export let transferDeletedCardId;  // save and transfer key to index.js and call deleteCard function
+export const approveDeleteImage = document.querySelector('.popup_type_approve_delete');
+
 // Функция создания карточки. Принимает на вход название, ссылку, функцию удаления, лайка, зума.
-export function createCard(card, deleteFunction, likeFunction, zoomImageFunction, userData) {
+export function createCard(card, deleteFunction, favoriteFunction, likeFunction, zoomImageFunction, userData) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const deleteButton = cardElement.querySelector('.card__delete-button');
+    const blockButton = cardElement.querySelector('.card__block-button');
+    const favoriteButton = cardElement.querySelector('.card__favorite-button');
     const likeButton = cardElement.querySelector('.card__like-button');
     const cardImage = cardElement.querySelector('.card__image');
 
-    deleteButton.addEventListener('click', function(){deleteFunction(card._id);});
+    deleteButton.addEventListener('click', function(){
+      openModal(approveDeleteImage);
+      transferDeletedCardId = card._id;
+    });
     likeButton.addEventListener('click', (event) => {likeFunction(event, card);});
     cardImage.addEventListener('click', zoomImageFunction);
+    favoriteButton.addEventListener('click', favoriteFunction);
 
     cardElement.querySelector('.card__title').textContent = card.name;
     cardElement.querySelector('.card__image').src = card.link;
@@ -32,6 +41,10 @@ export function createCard(card, deleteFunction, likeFunction, zoomImageFunction
     if (userData._id !== card.owner._id) {
       deleteButton.style.background = "none";
       deleteButton.disabled = true;
+    }
+    else {
+      blockButton.style.background = "none";
+      blockButton.disabled = true;
     }
 
     // Проверка на нахождение пользователя в списке пользователей карточки, которые поставили лайк
@@ -54,7 +67,7 @@ export function deleteCard(id) {
        toShowCards(initialCards, cardContainer, userData);  
    })
    .catch((err) => {
-       console.log(err); // выводим ошибку в консоль
+       console.log(err); 
   });
 }
 
@@ -95,7 +108,7 @@ export function likeCard(event, card) {
 export function toShowCards(cardList, container, usersData) {
   container.innerHTML = "";
   cardList.forEach(function (element){
-    container.append(createCard(element, deleteCard, likeCard, zoomCard, usersData));
+    container.append(createCard(element, deleteCard, setFavorite, likeCard, zoomCard, usersData));
   });
 }
 
@@ -110,7 +123,17 @@ export function toEditCardPopup(){
       initialCards.unshift(card);
       toShowCards(initialCards, cardContainer, userData);  
   })
+  .catch((err) => {
+    console.log(err); 
+  })
   .finally(() => {
       renderLoading(newImagePopupButtonRenderIsLoading, false);
   })
+}
+
+
+// ----------------------
+
+function setFavorite(event) {
+  event.target.classList.toggle("card__favorite-button_is-active");
 }
