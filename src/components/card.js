@@ -81,7 +81,12 @@ export function createCard(card, deleteFunction, favoriteFunction, likeFunction,
 export function deleteCard(id) {
     deleteCardRequest(id)
     .then(() => {
-       initialCards.shift()
+       for (let i = 0; i < initialCards.length; i++){
+        if (initialCards[i]._id === id) {
+            initialCards.splice(i, 1);
+            break
+        }
+       }
        toShowCards(initialCards, cardContainer, userData);  
    })
    .catch((err) => {
