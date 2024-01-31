@@ -17,6 +17,8 @@ const newImagePopupButtonRenderIsLoading = newCardPopup.querySelector('.button')
 export let transferDeletedCardId;  // save and transfer key to index.js and call deleteCard function
 export const approveDeleteImage = document.querySelector('.popup_type_approve_delete');
 
+const headerFavoriteButton = document.querySelector('.profile__favorite-button');
+
 // Функция создания карточки. Принимает на вход название, ссылку, функцию удаления, лайка, зума.
 export function createCard(card, deleteFunction, favoriteFunction, likeFunction, zoomImageFunction, userData) {
   if (localStorage.getItem(card._id) !== 'block'){
@@ -73,7 +75,16 @@ export function createCard(card, deleteFunction, favoriteFunction, likeFunction,
     
     cardElement.querySelector('.card__likes').textContent = card.likes.length;
 
-    return cardElement;
+    if (headerFavoriteButton.classList.contains('profile__favorite-button_is-active')){
+      
+      if (favoriteButton.classList.contains('card__favorite-button_is-active')){
+        return cardElement;
+      }
+    }
+    else{
+      return cardElement;
+    }
+    
   }
   }
 
@@ -171,6 +182,11 @@ function setFavorite(event, id) {
   else {
     localStorage.removeItem(id);
   }
-  console.log(localStorage);
 }
+
+
+headerFavoriteButton.addEventListener('click', () => {
+    headerFavoriteButton.classList.toggle('profile__favorite-button_is-active');
+    toShowCards(initialCards, cardContainer, userData);  
+})
 

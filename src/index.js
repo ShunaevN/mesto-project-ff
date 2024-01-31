@@ -103,5 +103,8 @@ approveDeleteImage.addEventListener('submit', function(evt) {
 enableValidation(globalConfigSelectors);
 
 
+
+
+
   
 
