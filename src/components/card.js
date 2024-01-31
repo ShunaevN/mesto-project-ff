@@ -20,7 +20,7 @@ export const approveDeleteImage = document.querySelector('.popup_type_approve_de
 const headerFavoriteButton = document.querySelector('.profile__favorite-button');
 
 // Функция создания карточки. Принимает на вход название, ссылку, функцию удаления, лайка, зума.
-export function createCard(card, deleteFunction, favoriteFunction, likeFunction, zoomImageFunction, userData) {
+export function createCard(card, favoriteFunction, likeFunction, zoomImageFunction, userData) {
   if (localStorage.getItem(card._id) !== 'block'){
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
@@ -144,7 +144,7 @@ export function likeCard(event, card) {
 export function toShowCards(cardList, container, usersData) {
   container.innerHTML = "";
   cardList.forEach(function (element){
-    const card = createCard(element, deleteCard, setFavorite, likeCard, zoomCard, usersData);
+    const card = createCard(element, setFavorite, likeCard, zoomCard, usersData);
     if (card){
       container.append(card);
     }
@@ -171,8 +171,6 @@ export function toEditCardPopup(){
   })
 }
 
-
-// ----------------------
 
 function setFavorite(event, id) {
   event.target.classList.toggle("card__favorite-button_is-active");
