@@ -1,15 +1,3 @@
-import { toEditUsersProfile, changeAvatar } from "./api";
-import { profileNameInput, profileAboutInput, profileImage, renderLoading} from "..";
-
-export const profilePopup = document.querySelector('.popup_type_edit');
-const profilePopupButtonRenderIsLoading = profilePopup.querySelector('.button');
-const inputName = profilePopup.querySelector('.popup__input_type_name');
-const inputDescription = profilePopup.querySelector('.popup__input_type_description');
-
-const newImageProfilePopup = document.querySelector('.popup_type_profile_image');
-const editImageProfileForm = newImageProfilePopup.querySelector('.popup__form');
-const newProfileImagePopupButtonRenderIsLoading = editImageProfileForm.querySelector('.button');
-
 function closeButtonIsClicked(event){
     const targetClassList = event.target.classList; // запишем в переменную класс элемента, на котором произошло событие
     if (targetClassList.contains('popup') || targetClassList.contains('popup__close')) { // проверяем наличие класса попапа ИЛИ кнопки закрытия
@@ -43,10 +31,6 @@ export function openModal(popup) {
     document.addEventListener('keydown', escapeButtonIsClicked);
 }
 
-export function openPropfilePopup(popup) { 
-    openModal(popup);
-    } 
-
 // Функция закрытия модального окна. Принимает на вход попап, который необходимо закрыть.
 // Реализация функции основана на добавлении/удалении соответствующего класса
 export function closeModal(popup) {
@@ -58,35 +42,7 @@ export function closeModal(popup) {
     document.removeEventListener('keydown', escapeButtonIsClicked);
 }
 
-// Функция изменения значений имени и о себе. Принимает на вход поля, в котрые будем вставлять значения
-// и попап, с которого мы забираем эти значения. Функция будет экспортирована и использована в index.js
-export function toEditProfilePopup(){
-    toEditUsersProfile(inputName.value, inputDescription.value)
-    .then((user) => {
-        profileAboutInput.textContent = user.about;
-        profileNameInput.textContent = user.name;
-    })
-    .catch((err) => {
-        console.log(err); 
-      })
-    .finally(() => {
-        renderLoading(profilePopupButtonRenderIsLoading, false);
-    })
-    
-}
 
-export function toEditProfileImagePopup(url){
-    changeAvatar(url)
-    .then((user)=> {
-        profileImage.style.backgroundImage = `url(${user.avatar})`;
-    })
-    .catch((err) => {
-        console.log(err); 
-      })
-    .finally(() => {
-        renderLoading(newProfileImagePopupButtonRenderIsLoading, false);
-    })
-}
 
 
 

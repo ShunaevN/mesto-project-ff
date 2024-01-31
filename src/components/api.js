@@ -6,18 +6,20 @@ const config = {
     }
   }
 
+function checkValidityResponse(response) {
+    if (response.ok) {
+        return response.json()
+    }
+    return Promise.reject(`Ошибка: ${response.status}`);
+}
+
 export function getUserInfo(){
     return fetch(`${config.baseUrl}/users/me`, {
     headers: {
         authorization: config.headers.authorization
     }
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json()
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(res => checkValidityResponse(res));
 }
 
 export function getCardsInfo() {
@@ -26,12 +28,7 @@ export function getCardsInfo() {
         authorization: config.headers.authorization
     }
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json()
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(res => checkValidityResponse(res));
 }
 
 export function toEditUsersProfile(userName, userAbout){
@@ -47,13 +44,7 @@ export function toEditUsersProfile(userName, userAbout){
                 about: userAbout
             })
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-            
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(res => checkValidityResponse(res));
 }
 
 export function addNewCard(cardName, cardLink){
@@ -69,13 +60,7 @@ export function addNewCard(cardName, cardLink){
                 link: cardLink
             })
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-            
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(res => checkValidityResponse(res));
     
 }
 
@@ -86,13 +71,7 @@ export function deleteCardRequest(cardId) {
         headers: {
             authorization: config.headers.authorization},
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-            
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(res => checkValidityResponse(res));
 }
 
 export function putLikeRequest(cardId) {
@@ -102,12 +81,7 @@ export function putLikeRequest(cardId) {
         headers: {
             authorization: config.headers.authorization},
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json()
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(res => checkValidityResponse(res));
     
 }
 
@@ -119,12 +93,7 @@ export function deleteLikeRequest(cardId) {
         headers: {
             authorization: config.headers.authorization},
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json()
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(res => checkValidityResponse(res));
 }
 
 export function changeAvatar(newAvatarUrl) {
@@ -139,10 +108,5 @@ export function changeAvatar(newAvatarUrl) {
                 avatar: newAvatarUrl
             })
     })
-    .then(res => {
-        if (res.ok) {
-            return res.json()
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(res => checkValidityResponse(res));
 }
