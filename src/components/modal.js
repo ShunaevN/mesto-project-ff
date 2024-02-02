@@ -12,16 +12,10 @@ function escapeButtonIsClicked(event){
     }
 }
 
-function setClearPopupInput(popup) {
-    const inputList = Array.from(popup.querySelectorAll('.popup__input'));
-    inputList.forEach(input =>  input.value = '');
-       
-}
 
 // Функция открытия модального окна. Принимает на вход попап, который необходимо открыть.
 // Реализация функции основана на добавлении/удалении соответствующего класса
 export function openModal(popup) {
-    setClearPopupInput(popup);
     popup.classList.add("popup_is-animated");
     setTimeout(function () {
         popup.classList.add("popup_is-opened");

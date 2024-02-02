@@ -1,10 +1,21 @@
 import '../pages/index.css';
 import {createCard, transferDeletedCardId} from './components/card.js';
-import { enableValidation } from './components/validation.js';
+import { enableValidation, clearValidation } from './components/validation.js';
 import {addNewCard, deleteCardRequest, putLikeRequest, deleteLikeRequest, 
         getUserInfo, getCardsInfo, changeAvatar, toEditUsersProfile} from './components/api.js';
 import {openModal, closeModal} from './components/modal.js';
 
+let userData;
+const initialCards = [];
+
+const globalConfigSelectors = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+  }
 
 const userInfo = getUserInfo();
 const cardsInfo = getCardsInfo();
@@ -13,21 +24,19 @@ const content = document.querySelector('.content');
 const cardContainer = content.querySelector('.places__list');
 
 const newCardPopup = document.querySelector('.popup_type_new-card');
+const inputTypeCard = newCardPopup.querySelector('.popup__input_type_card-name');
+const inputTypeUrl = newCardPopup.querySelector('.popup__input_type_url');
+const newImagePopupButtonRenderIsLoading = newCardPopup.querySelector('.button');
+
 const editImageProfile = document.querySelector('.popup_type_profile_image');
 const urlEditImageProfile = editImageProfile.querySelector('.popup__input_type_url');
+const newProfileImagePopupButtonRenderIsLoading = editImageProfile.querySelector('.button');
 
 const profileNameInput = document.querySelector('.profile__title');
 const profileAboutInput = document.querySelector('.profile__description');
 const profileImage = document.querySelector('.profile__image');
 const editButtonProfile = document.querySelector('.profile__edit-button');
 const addCardButton = document.querySelector('.profile__add-button');
-
-let userData;
-const initialCards = [];
-
-const newImageProfilePopup = document.querySelector('.popup_type_profile_image');
-const editImageProfileForm = newImageProfilePopup.querySelector('.popup__form');
-const newProfileImagePopupButtonRenderIsLoading = editImageProfileForm.querySelector('.button');
 
 const profilePopup = document.querySelector('.popup_type_edit');
 const profilePopupButtonRenderIsLoading = profilePopup.querySelector('.button');
@@ -43,11 +52,6 @@ const tagParagraphOfImagePopup = imagePopup.querySelector('.popup__caption');
 const tagAuthorOfImagePopup = imagePopup.querySelector('.popup__author');
 
 
-const inputTypeCard = newCardPopup.querySelector('.popup__input_type_card-name');
-const inputTypeUrl = newCardPopup.querySelector('.popup__input_type_url');
-const newImagePopupButtonRenderIsLoading = newCardPopup.querySelector('.button');
-
-
 function renderLoading(button, isLoading) {
     if (isLoading) {
         button.textContent = "Сохранение...";
@@ -57,14 +61,6 @@ function renderLoading(button, isLoading) {
     }
 }
 
-const globalConfigSelectors = {
-    formSelector: '.popup__form',
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_disabled',
-    inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible'
-  }
 
 Promise.all([userInfo, cardsInfo])
     .then((data) =>{
@@ -84,9 +80,35 @@ Promise.all([userInfo, cardsInfo])
     });
 
 
-editButtonProfile.addEventListener('click', () => {openPropfilePopup(profilePopup);});
-addCardButton.addEventListener('click', () => {openModal(newCardPopup);});
-profileImage.addEventListener('click', () => {openModal(editImageProfile);});
+function setClearPopupInput(popup) {
+    const inputList = Array.from(popup.querySelectorAll('.popup__input'));
+    inputList.forEach(input =>  input.value = '');     
+}
+
+
+editButtonProfile.addEventListener('click', () => {
+    clearValidation(profilePopup, globalConfigSelectors);
+    openProfilePopup(profilePopup);
+});
+
+
+addCardButton.addEventListener('click', () => {
+    clearValidation(newCardPopup, globalConfigSelectors);
+    openModal(newCardPopup);
+});
+
+
+profileImage.addEventListener('click', () => {
+    clearValidation(editImageProfile, globalConfigSelectors);
+    openModal(editImageProfile);
+});
+
+
+headerFavoriteButton.addEventListener('click', () => {
+    headerFavoriteButton.classList.toggle('profile__favorite-button_is-active');
+    toShowCards(initialCards, cardContainer, userData);  
+})
+
 
 // Нажимаем на кнопку и определяем какой попап является родителем у этой кнопки
 profilePopup.addEventListener('submit', function(evt) {
@@ -95,6 +117,7 @@ profilePopup.addEventListener('submit', function(evt) {
     toEditProfilePopup();
     closeModal(profilePopup);
 });
+
 
 newCardPopup.addEventListener('submit', function(evt) {
     evt.preventDefault();
@@ -111,19 +134,21 @@ editImageProfile.addEventListener('submit', function(evt) {
     closeModal(editImageProfile);
 })
 
+
 approveDeleteImage.addEventListener('submit', function(evt) {
     evt.preventDefault();
     deleteCard(transferDeletedCardId);
     closeModal(approveDeleteImage);
 })
 
-enableValidation(globalConfigSelectors);
-
 
 function toEditProfileImagePopup(url){
     changeAvatar(url)
     .then((user)=> {
         profileImage.style.backgroundImage = `url(${user.avatar})`;
+        setClearPopupInput(editImageProfile);
+        newProfileImagePopupButtonRenderIsLoading.classList.add('popup__button_disabled');
+        newProfileImagePopupButtonRenderIsLoading.disabled = true;
     })
     .catch((err) => {
         console.log(err); 
@@ -132,6 +157,7 @@ function toEditProfileImagePopup(url){
         renderLoading(newProfileImagePopupButtonRenderIsLoading, false);
     })
 }
+
 
 function toEditProfilePopup(){
     toEditUsersProfile(inputName.value, inputDescription.value)
@@ -144,14 +170,16 @@ function toEditProfilePopup(){
       })
     .finally(() => {
         renderLoading(profilePopupButtonRenderIsLoading, false);
-    })
-    
+    })  
 }
 
 
-function openPropfilePopup(popup) { 
+function openProfilePopup(popup) {
+    inputName.value = profileNameInput.textContent;
+    inputDescription.value = profileAboutInput.textContent;
     openModal(popup);
 } 
+
 
 function deleteCard(id) {
     deleteCardRequest(id)
@@ -178,7 +206,6 @@ function zoomCard(event) {
   tagImageOfImagePopup.setAttribute("alt", `Фотография ${event.target.alt}`)
   tagParagraphOfImagePopup.textContent = event.target.alt;
   tagAuthorOfImagePopup.textContent = event.target.parentElement.querySelector('.card__author').textContent;
-
 }
 
 // Функция лайка карточки - передается как параметр в createCard.
@@ -225,7 +252,10 @@ function toEditCardPopup(){
   addNewCard(inputTypeCard.value, inputTypeUrl.value)
   .then((card) => {
       initialCards.unshift(card);
-      toShowCards(initialCards, cardContainer, userData);  
+      toShowCards(initialCards, cardContainer, userData);
+      setClearPopupInput(newCardPopup);
+      newImagePopupButtonRenderIsLoading.classList.add('popup__button_disabled');
+      newImagePopupButtonRenderIsLoading .disabled = true;  
   })
   .catch((err) => {
     console.log(err); 
@@ -245,13 +275,8 @@ function setFavorite(event, id) {
   }
 }
 
-headerFavoriteButton.addEventListener('click', () => {
-    headerFavoriteButton.classList.toggle('profile__favorite-button_is-active');
-    toShowCards(initialCards, cardContainer, userData);  
-})
 
-
-
+enableValidation(globalConfigSelectors);
 
 
   

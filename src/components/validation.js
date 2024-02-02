@@ -73,3 +73,8 @@ const showInputError = (objectConfig, formElement, inputElement, errorMessage) =
     });
   };
 
+export function clearValidation(popup, validationConfig){
+  const inputsError = Array.from(popup.querySelectorAll(`${validationConfig.inputSelector}-error`));
+  inputsError.forEach((input) => input.textContent = '');
+}
+
