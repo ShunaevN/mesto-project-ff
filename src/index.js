@@ -1,12 +1,12 @@
 import '../pages/index.css';
-import {createCard, transferDeletedCardId} from './components/card.js';
+import {createCard, likeCard} from './components/card.js';
 import { enableValidation, clearValidation } from './components/validation.js';
-import {addNewCard, deleteCardRequest, putLikeRequest, deleteLikeRequest, 
-        getUserInfo, getCardsInfo, changeAvatar, toEditUsersProfile} from './components/api.js';
+import {addNewCard, deleteCardRequest, getUserInfo, getCardsInfo, changeAvatar, toEditUsersProfile} from './components/api.js';
 import {openModal, closeModal} from './components/modal.js';
 
 let userData;
 const initialCards = [];
+let transferDeletedCardId;
 
 const globalConfigSelectors = {
     formSelector: '.popup__form',
@@ -93,13 +93,12 @@ editButtonProfile.addEventListener('click', () => {
 
 
 addCardButton.addEventListener('click', () => {
-    clearValidation(newCardPopup, globalConfigSelectors);
+   
     openModal(newCardPopup);
 });
 
 
 profileImage.addEventListener('click', () => {
-    clearValidation(editImageProfile, globalConfigSelectors);
     openModal(editImageProfile);
 });
 
@@ -131,9 +130,15 @@ editImageProfile.addEventListener('submit', function(evt) {
     evt.preventDefault();
     renderLoading(evt.target.querySelector('.button'), true)
     toEditProfileImagePopup(urlEditImageProfile.value);
+    setClearPopupInput(editImageProfile);
     closeModal(editImageProfile);
+    
 })
 
+function deleteCardCallback(id){
+  openModal(approveDeleteImage);
+  transferDeletedCardId = id;
+}
 
 approveDeleteImage.addEventListener('submit', function(evt) {
     evt.preventDefault();
@@ -146,9 +151,9 @@ function toEditProfileImagePopup(url){
     changeAvatar(url)
     .then((user)=> {
         profileImage.style.backgroundImage = `url(${user.avatar})`;
-        setClearPopupInput(editImageProfile);
         newProfileImagePopupButtonRenderIsLoading.classList.add('popup__button_disabled');
         newProfileImagePopupButtonRenderIsLoading.disabled = true;
+        
     })
     .catch((err) => {
         console.log(err); 
@@ -210,23 +215,7 @@ function zoomCard(event) {
 
 // Функция лайка карточки - передается как параметр в createCard.
 // Функционал реализован через добавдение/удаление соответсвующего класса
-function likeCard(event, card) {
-  event.target.classList.toggle("card__like-button_is-active");
-  if (event.target.classList.contains("card__like-button_is-active"))
-    {
-      putLikeRequest(card._id).then((count) => 
-        {
-          event.target.parentElement.querySelector('.card__likes').textContent = count.likes.length;
-        });
-    }
-  else 
-    {
-      deleteLikeRequest(card._id).then((count) => 
-        {
-          event.target.parentElement.querySelector('.card__likes').textContent = count.likes.length;
-        });
-    }
-}
+
 
 // Функция отрисовки карточки. Цикл из прошлого проекта был вынесен в отдельную функцию, так
 // как понадобилось отрисовывать карточки каждый раз при добавлении новой карточки
@@ -235,7 +224,7 @@ function likeCard(event, card) {
 function toShowCards(cardList, container, usersData) {
   container.innerHTML = "";
   cardList.forEach(function (element){
-    const card = createCard(element, setFavorite, likeCard, zoomCard, usersData);
+    const card = createCard(element, setFavorite, deleteCardCallback, likeCard, zoomCard, usersData);
     if (card){
       container.append(card);
     }
@@ -279,5 +268,5 @@ function setFavorite(event, id) {
 enableValidation(globalConfigSelectors);
 
 
-  
+
 
